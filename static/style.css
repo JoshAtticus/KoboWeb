@@ -1,0 +1,1172 @@
+/* KoboWeb Styles - Compatible with Android Browser 4 */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.5;
+    background: #fff;
+    color: #000;
+}
+
+/* Font Awesome icon styling for e-ink */
+.fa {
+    display: inline-block;
+    font-size: 1em;
+    line-height: 1;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+/* Header */
+.header {
+    background: #000;
+    color: #fff;
+    padding: 5px 10px;
+    border-bottom: 2px solid #333;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.clock {
+    font-size: 18px;
+    font-weight: bold;
+    float: left;
+}
+
+.date {
+    font-size: 18px;
+    float: right;
+}
+
+/* Navigation */
+.nav {
+    background: #f0f0f0;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    overflow: hidden;
+    position: fixed;
+    top: 28px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 99;
+}
+
+.nav-btn {
+    float: left;
+    padding: 12px 16px;
+    margin: 3px;
+    background: #fff;
+    border: 1px solid #999;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.nav-btn:active {
+    background: #ddd;
+}
+
+.nav-btn-icon {
+    position: relative;
+    padding: 12px 20px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    background: #000;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
+.user-info {
+    float: right;
+    padding: 8px 12px;
+    margin: 3px;
+    background: #fff;
+    border: 1px solid #999;
+    line-height: 36px;
+}
+
+.user-pic-small {
+    width: 36px;
+    height: 36px;
+    vertical-align: middle;
+    margin-right: 8px;
+    border: 1px solid #999;
+}
+
+.user-name-link {
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.user-name-link:active {
+    color: #666;
+}
+
+/* Container */
+.container {
+    padding: 10px;
+    max-width: 800px;
+    margin: 0 auto;
+    margin-top: 85px;
+}
+
+h2 {
+    font-size: 24px;
+    margin: 15px 0 10px 0;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #000;
+}
+
+h3 {
+    font-size: 20px;
+    margin: 10px 0 8px 0;
+}
+
+/* Screens */
+.screen {
+    display: none;
+}
+
+/* App List */
+.app-list {
+    margin: 20px 0;
+}
+
+.app-item {
+    border: 2px solid #000;
+    padding: 15px;
+    margin: 10px 0;
+    background: #fff;
+    cursor: pointer;
+}
+
+.app-item:active {
+    background: #f0f0f0;
+}
+
+.app-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.app-desc {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Settings */
+.settings-section {
+    margin: 15px 0;
+    padding: 10px;
+    background: #fafafa;
+    border: 1px solid #ccc;
+}
+
+.settings-item {
+    margin: 10px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.settings-item:last-child {
+    border-bottom: none;
+}
+
+.settings-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.settings-value {
+    color: #000;
+    word-wrap: break-word;
+    font-size: 16px;
+}
+
+.settings-note {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #000;
+    font-style: italic;
+    font-weight: bold;
+    padding: 8px;
+    border: 2px dashed #000;
+    background: #f0f0f0;
+}
+
+/* Account Cards */
+.account-card {
+    border: 2px solid #999;
+    padding: 12px;
+    margin: 10px 0;
+    background: #fff;
+}
+
+.account-active {
+    border-color: #000;
+    background: #f0f0f0;
+}
+
+.account-header {
+    margin-bottom: 10px;
+}
+
+.account-service {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.account-username {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.account-actions {
+    margin-top: 10px;
+}
+
+.btn-small {
+    padding: 8px 12px;
+    font-size: 16px;
+    margin-right: 8px;
+    margin-top: 5px;
+}
+
+.btn-active {
+    background: #000;
+    color: #fff;
+    border: 2px solid #000;
+}
+
+.btn-danger {
+    background: #fff;
+    color: #000;
+    border: 3px double #000;
+    font-weight: bold;
+}
+
+.btn-danger:active {
+    background: #ddd;
+}
+
+.btn-add-account {
+    width: 100%;
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Service List */
+.service-list {
+    margin: 20px 0;
+}
+
+.service-item {
+    border: 2px solid #999;
+    padding: 15px;
+    margin: 10px 0;
+    background: #fff;
+    cursor: pointer;
+}
+
+.service-item:active {
+    background: #f0f0f0;
+}
+
+.service-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.service-desc {
+    font-size: 16px;
+    color: #666;
+}
+
+/* Notifications */
+.notification-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    background: #fafafa;
+}
+
+.notification-header {
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.notification-pic {
+    width: 40px;
+    height: 40px;
+    float: left;
+    margin-right: 10px;
+    border: 1px solid #999;
+}
+
+.notification-content {
+    margin: 8px 0;
+    padding: 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.notification-content p {
+    margin: 5px 0;
+}
+
+/* Tabs */
+.tabs {
+    margin: 15px 0 10px 0;
+    border-bottom: 2px solid #000;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    margin: 0 5px 0 0;
+    background: #fff;
+    border: 1px solid #999;
+    border-bottom: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.tab-btn:active {
+    background: #ddd;
+}
+
+.tab-btn.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Loading */
+.loading {
+    padding: 20px;
+    font-style: italic;
+    color: #000;
+}
+
+/* User Card */
+.user-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 8px 0;
+    background: #fafafa;
+    cursor: pointer;
+}
+
+.user-card:active {
+    background: #f0f0f0;
+}
+
+.user-card-header {
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.user-pic-medium {
+    width: 60px;
+    height: 60px;
+    float: left;
+    margin-right: 10px;
+    border: 1px solid #999;
+}
+
+.user-name {
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.user-bio {
+    margin: 5px 0;
+    color: #000;
+    font-size: 16px;
+}
+
+.user-stats {
+    font-size: 16px;
+    color: #000;
+    margin-top: 5px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 8px;
+    margin-left: 5px;
+    background: #000;
+    color: #fff;
+    font-size: 14px;
+    border: 1px solid #000;
+}
+
+/* Profile Detail */
+.profile-header {
+    border: 2px solid #000;
+    padding: 15px;
+    margin: 15px 0;
+    background: #fafafa;
+    overflow: hidden;
+}
+
+.profile-pic-large {
+    width: 120px;
+    height: 120px;
+    float: left;
+    margin-right: 15px;
+    border: 2px solid #000;
+}
+
+.profile-info {
+    overflow: hidden;
+}
+
+.profile-username {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.profile-username .btn {
+    font-size: 16px;
+    padding: 6px 12px;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.profile-bio {
+    font-size: 18px;
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.profile-stats {
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.profile-stat {
+    display: inline-block;
+    margin-right: 15px;
+    font-weight: bold;
+}
+
+.profile-actions {
+    margin-top: 15px;
+}
+
+.profile-actions .btn {
+    margin-right: 10px;
+}
+
+.btn-following {
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+}
+
+.btn-following:active {
+    background: #f0f0f0;
+}
+
+/* Post Card */
+.post-card {
+    border: 1px solid #999;
+    padding: 10px;
+    margin: 10px 0;
+    background: #fff;
+    cursor: pointer;
+}
+
+.post-card:active {
+    background: #f5f5f5;
+}
+
+.post-header {
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 18px;
+    overflow: hidden;
+}
+
+.post-pic-small {
+    width: 32px;
+    height: 32px;
+    float: left;
+    margin-right: 8px;
+    border: 1px solid #999;
+}
+
+.post-content {
+    margin: 8px 0;
+    line-height: 1.6;
+    font-size: 16px;
+    color: #000;
+}
+
+.post-content p {
+    margin: 8px 0;
+}
+
+.post-content i {
+    font-style: italic;
+}
+
+.post-content b {
+    font-weight: bold;
+}
+
+.post-content img {
+    max-width: 100%;
+    max-height: 400px;
+    display: block;
+    margin: 10px 0;
+}
+
+.post-footer {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
+    font-size: 16px;
+    color: #000;
+}
+
+.post-stat {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.post-action {
+    display: inline-block;
+    margin-right: 15px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+
+.post-action:active {
+    background: #f0f0f0;
+}
+
+.post-action.loved {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+/* Comment Card */
+.comment-card {
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin: 8px 0;
+    background: #f9f9f9;
+}
+
+.comment-reply {
+    margin-left: 20px;
+    border-left: 3px solid #ccc;
+    padding-left: 10px;
+}
+
+.comment-header {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 16px;
+    overflow: hidden;
+}
+
+.comment-pic-small {
+    width: 28px;
+    height: 28px;
+    float: left;
+    margin-right: 8px;
+    border: 1px solid #999;
+}
+
+.comment-content {
+    margin: 5px 0;
+    line-height: 1.5;
+    font-size: 16px;
+    color: #000;
+}
+
+.comment-content p {
+    margin: 5px 0;
+}
+
+.comment-content img {
+    max-width: 100%;
+    max-height: 300px;
+    display: block;
+    margin: 10px 0;
+}
+
+.show-replies-btn {
+    margin-top: 8px;
+    margin-right: 8px;
+    padding: 6px 12px;
+    background: #fff;
+    border: 1px solid #999;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.show-replies-btn:active {
+    background: #f0f0f0;
+}
+
+/* Reply box */
+.reply-box {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+}
+
+.reply-box textarea {
+    margin-bottom: 8px;
+    min-height: 60px;
+}
+
+.reply-box .btn,
+.reply-box .btn-back {
+    margin-right: 8px;
+}
+
+/* Forms */
+.form-group {
+    margin: 10px 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #999;
+    font-size: 18px;
+    color: #000;
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #999;
+    font-size: 18px;
+    min-height: 100px;
+    font-family: Arial, sans-serif;
+    color: #000;
+}
+
+.btn {
+    padding: 12px 24px;
+    background: #000;
+    color: #fff;
+    border: 1px solid #000;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.btn:active {
+    background: #333;
+}
+
+.btn-back {
+    padding: 10px 18px;
+    background: #fff;
+    color: #000;
+    border: 1px solid #000;
+    font-size: 18px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.btn-back:active {
+    background: #f0f0f0;
+}
+
+/* Post Composer */
+.post-composer {
+    border: 2px solid #000;
+    padding: 10px;
+    margin: 15px 0;
+    background: #fafafa;
+}
+
+.post-composer textarea {
+    margin-bottom: 8px;
+}
+
+/* Comment Composer */
+.comment-composer {
+    border: 1px solid #999;
+    padding: 10px;
+    margin: 15px 0;
+    background: #f5f5f5;
+}
+
+.comment-composer textarea {
+    margin-bottom: 8px;
+}
+
+/* Error Messages */
+.error {
+    color: #000;
+    margin-top: 10px;
+    font-weight: bold;
+    padding: 8px;
+    border: 2px solid #000;
+    background: #f0f0f0;
+}
+
+/* Success Messages */
+.success {
+    color: #060;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Timestamp */
+.timestamp {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Icon replacements for emojis */
+.icon {
+    display: inline-block;
+    font-style: normal;
+    font-weight: bold;
+}
+
+/* Pagination */
+.pagination {
+    margin: 20px 0;
+}
+
+.page-btn {
+    padding: 8px 16px;
+    margin: 0 3px;
+    background: #fff;
+    border: 1px solid #999;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.page-btn:active {
+    background: #ddd;
+}
+
+.page-btn.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+/* Clear floats */
+.nav:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Modal System */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+}
+
+.modal-custom {
+    z-index: 1001;
+}
+
+.modal-box {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    right: 10px;
+    margin-top: -150px;
+    background: #fff;
+    border: 3px solid #000;
+    padding: 20px;
+    max-height: 80%;
+    overflow-y: auto;
+}
+
+/* Center modal on larger screens */
+@media (min-width: 600px) {
+    .modal-box {
+        left: 50%;
+        right: auto;
+        width: 500px;
+        margin-left: -250px;
+    }
+}
+
+.modal-content {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    color: #000;
+    word-wrap: break-word;
+}
+
+.modal-buttons {
+    text-align: right;
+}
+
+.modal-btn {
+    padding: 12px 24px;
+    margin-left: 10px;
+    font-size: 18px;
+    border: 2px solid #000;
+    background: #fff;
+    cursor: pointer;
+    min-width: 100px;
+}
+
+.modal-btn:active {
+    background: #ddd;
+}
+
+.modal-btn-primary {
+    background: #000;
+    color: #fff;
+}
+
+.modal-btn-primary:active {
+    background: #333;
+}
+
+.modal-btn-danger {
+    border-color: #000;
+    border-width: 3px;
+    border-style: double;
+    color: #000;
+    font-weight: bold;
+}
+
+.modal-btn-danger:active {
+    background: #ddd;
+}
+
+/* Reposted post styling */
+.reposted-post {
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin-top: 8px;
+    background: #f5f5f5;
+    border-radius: 4px;
+}
+
+/* ============================================
+   UI KIT - Consistent styling across all apps
+   ============================================ */
+
+/* App Navigation Bar (standardized for all apps) */
+.app-nav {
+    background: #f0f0f0;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    overflow: hidden;
+    position: fixed;
+    top: 28px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 99;
+}
+
+.app-nav-btn {
+    float: left;
+    padding: 10px 14px;
+    margin: 3px;
+    background: #fff;
+    border: 1px solid #999;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.app-nav-btn:active {
+    background: #ddd;
+}
+
+.app-nav-btn.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+.app-nav:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Container with app-nav needs extra margin */
+.container-with-nav {
+    margin-top: 125px;
+}
+
+/* App Header (consistent app branding) */
+.app-header {
+    border-bottom: 2px solid #000;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+}
+
+.app-title {
+    font-size: 26px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.app-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-top: 3px;
+}
+
+/* App Tabs (consistent tab styling) */
+.app-tabs {
+    margin: 15px 0 10px 0;
+    border-bottom: 2px solid #000;
+}
+
+.app-tab-btn {
+    padding: 10px 20px;
+    margin: 0 5px 0 0;
+    background: #fff;
+    border: 1px solid #999;
+    border-bottom: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.app-tab-btn:active {
+    background: #ddd;
+}
+
+.app-tab-btn.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+
+/* App Content Sections */
+.app-section {
+    margin: 15px 0;
+    padding: 12px;
+    border: 1px solid #ccc;
+    background: #fafafa;
+}
+
+.app-section-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #999;
+}
+
+/* App Cards (consistent card styling) */
+.app-card {
+    border: 1px solid #999;
+    padding: 10px;
+    margin: 8px 0;
+    background: #fff;
+}
+
+.app-card-clickable {
+    cursor: pointer;
+}
+
+.app-card-clickable:active {
+    background: #f5f5f5;
+}
+
+.app-card-header {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.app-card-content {
+    font-size: 16px;
+    color: #000;
+    line-height: 1.5;
+}
+
+.app-card-footer {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #ddd;
+    font-size: 14px;
+    color: #666;
+}
+
+/* App Lists (consistent list styling) */
+.app-list-item {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.app-list-item:last-child {
+    border-bottom: none;
+}
+
+/* App Buttons (standardized button styles) */
+.app-btn-primary {
+    padding: 12px 24px;
+    background: #000;
+    color: #fff;
+    border: 2px solid #000;
+    font-size: 18px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.app-btn-primary:active {
+    background: #333;
+}
+
+.app-btn-secondary {
+    padding: 10px 20px;
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.app-btn-secondary:active {
+    background: #f0f0f0;
+}
+
+.app-btn-danger {
+    padding: 10px 20px;
+    background: #fff;
+    color: #000;
+    border: 3px double #000;
+    font-size: 18px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.app-btn-danger:active {
+    background: #ddd;
+}
+
+.app-btn-full-width {
+    width: 100%;
+    margin: 8px 0;
+}
+
+/* App Alerts and Notifications */
+.app-alert {
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid #000;
+    background: #f0f0f0;
+}
+
+.app-alert-info {
+    border-style: solid;
+}
+
+.app-alert-warning {
+    border-style: dashed;
+    font-weight: bold;
+}
+
+.app-alert-danger {
+    border-style: double;
+    border-width: 3px;
+    font-weight: bold;
+}
+
+/* App Empty States */
+.app-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    font-size: 16px;
+}
+
+/* App Loading States */
+.app-loading {
+    padding: 20px;
+    text-align: center;
+    font-style: italic;
+    color: #000;
+}
+
+.app-loading:before {
+    content: "⌛ ";
+    font-style: normal;
+}
+
+/* App Dividers */
+.app-divider {
+    height: 2px;
+    background: #000;
+    margin: 20px 0;
+}
+
+.app-divider-light {
+    height: 1px;
+    background: #ccc;
+    margin: 15px 0;
+}
