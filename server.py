@@ -21,7 +21,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import base64
 
-PORT = 8563
+# Allow overriding the port via environment variable; default to 3004 for Coolify
+PORT = int(os.getenv('PORT', '3004'))
 
 class KoboWebHandler(BaseHTTPRequestHandler):
     """Request handler for KoboWeb server"""

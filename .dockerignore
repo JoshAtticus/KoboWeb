@@ -1,0 +1,25 @@
+# Ignore VCS
+.git
+.gitignore
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# OS/editor files
+.DS_Store
+.idea/
+.vscode/
+Thumbs.db
