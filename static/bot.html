@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>KoboWeb Bot — KoboWeb</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js?v=37"></script>
+    <meta name="description" content="Identification page for the KoboWeb proxy bot." />
+</head>
+
+<body>
+    <!-- Header with Clock -->
+    <div class="header">
+        <div class="clock" id="clock">Loading...</div>
+        <div class="date" id="date">Loading...</div>
+    </div>
+
+    <main class="container content">
+        <h1 class="page-title">KoboWeb Proxy Bot</h1>
+
+        <section class="card">
+            <p>This page identifies the KoboWeb proxy bot and explains what the requests are.</p>
+
+            <div class="muted">
+                KoboWeb is a lightweight web client designed for e-readers (like Kobos and Kindles) and retro devices
+                (old iOS, Android, Game Consoles etc).
+            </div>
+
+            <h2>What you'll see in logs</h2>
+            <p>Requests from the proxy use this user agent:</p>
+            <pre class="code"><code>KoboWeb/1.0 (+https://kobo.joshattic.us/bot)</code></pre>
+
+            <h2>Abuse prevention</h2>
+            <p>We implement strict rate limiting and domain allowlisting to reduce abuse and accidental scraping of
+                other sites.</p>
+
+            <h2>Contact</h2>
+            <p class="muted">For questions or issues: <a href="mailto:contact@joshattic.us">contact@joshattic.us</a></p>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <small>© 2025 - 2026 JoshAtticus</small>
+        </div>
+    </footer>
+</body>
+
+</html>

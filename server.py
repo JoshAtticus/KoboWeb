@@ -7,6 +7,7 @@ A simple Python server that hosts the website and acts as a proxy for API reques
 
 import os
 import json
+import time
 import urllib.request
 import urllib.error
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -21,24 +22,59 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import base64
 
-# Allow overriding the port via environment variable; default to 3004 for Coolify
 PORT = int(os.getenv('PORT', '3004'))
 
 class KoboWebHandler(BaseHTTPRequestHandler):
     """Request handler for KoboWeb server"""
+    
+    ALLOWED_DOMAINS = ['api.wasteof.money', 'wasteof.money', 'i.ibb.co', 'u.cubeupload.com']
+    RATE_LIMIT_Window = 60  # seconds
+    RATE_LIMIT_MAX_REQUESTS = 60  # requests per window
+    request_history = {}
+
+    def is_url_allowed(self, url):
+        """Check if the URL is allowed to be proxied"""
+        try:
+            parsed = urlparse(url)
+            domain = parsed.netloc.lower()
+            if ':' in domain:
+                domain = domain.split(':')[0]
+            for allowed in self.ALLOWED_DOMAINS:
+                if domain == allowed or domain.endswith('.' + allowed):
+                    return True
+            return False
+        except:
+            return False
+
+    def check_rate_limit(self):
+        """Check if the client has exceeded the rate limit"""
+        client_ip = self.client_address[0]
+        now = time.time()
+        
+        if client_ip not in self.request_history:
+            self.request_history[client_ip] = []
+        
+        self.request_history[client_ip] = [t for t in self.request_history[client_ip] if now - t < self.RATE_LIMIT_Window]
+        
+        if len(self.request_history[client_ip]) >= self.RATE_LIMIT_MAX_REQUESTS:
+            return False
+            
+        self.request_history[client_ip].append(now)
+        return True
     
     def do_GET(self):
         """Handle GET requests"""
         parsed_path = urlparse(self.path)
         path = parsed_path.path
         
-        # Serve static files
         if path == '/' or path == '/index.html':
             self.serve_file('static/index.html', 'text/html')
         elif path == '/style.css':
             self.serve_file('static/style.css', 'text/css')
         elif path == '/script.js':
             self.serve_file('static/script.js', 'application/javascript')
+        elif path == '/bot':
+            self.serve_file('static/bot.html', 'text/html')
         elif path.startswith('/api/proxy'):
             # Proxy API requests
             self.handle_proxy_get(parsed_path)
@@ -54,6 +90,11 @@ class KoboWebHandler(BaseHTTPRequestHandler):
     
     def do_POST(self):
         """Handle POST requests"""
+        # Global rate limit check for POST requests
+        if not self.check_rate_limit():
+            self.send_error(429, 'Too Many Requests')
+            return
+
         parsed_path = urlparse(self.path)
         path = parsed_path.path
         
@@ -89,7 +130,7 @@ class KoboWebHandler(BaseHTTPRequestHandler):
         """Proxy an external file (CSS, fonts, etc.)"""
         try:
             request = urllib.request.Request(url)
-            request.add_header('User-Agent', 'KoboWeb/1.0')
+            request.add_header('User-Agent', 'KoboWeb/1.0 (+https://kobo.joshattic.us/bot)')
             
             response = urllib.request.urlopen(request)
             data = response.read()
@@ -130,7 +171,7 @@ class KoboWebHandler(BaseHTTPRequestHandler):
         
         try:
             request = urllib.request.Request(font_url)
-            request.add_header('User-Agent', 'KoboWeb/1.0')
+            request.add_header('User-Agent', 'KoboWeb/1.0 (+https://kobo.joshattic.us/bot)')
             
             response = urllib.request.urlopen(request)
             data = response.read()
@@ -147,6 +188,11 @@ class KoboWebHandler(BaseHTTPRequestHandler):
     
     def handle_proxy_get(self, parsed_path):
         """Handle GET proxy requests"""
+        # Rate limit check
+        if not self.check_rate_limit():
+            self.send_error(429, 'Too Many Requests')
+            return
+
         query_params = parse_qs(parsed_path.query)
         
         if 'url' not in query_params:
@@ -154,13 +200,24 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             return
         
         target_url = query_params['url'][0]
+        
+        # Domain allowlist check
+        if not self.is_url_allowed(target_url):
+            self.send_error(403, 'Forbidden: Domain not allowed')
+            return
+
         auth_token = self.headers.get('Authorization')
         
         try:
             # Make request to wasteof.money API
             request = urllib.request.Request(target_url)
-            request.add_header('User-Agent', 'KoboWeb/1.0')
+            request.add_header('User-Agent', 'KoboWeb/1.0 (+https://kobo.joshattic.us/bot)')
             
+            # Add Forwarded headers
+            client_ip = self.client_address[0]
+            request.add_header('X-Forwarded-For', client_ip)
+            request.add_header('Forwarded', f'for={client_ip}')
+
             if auth_token:
                 request.add_header('Authorization', auth_token)
             
@@ -191,6 +248,11 @@ class KoboWebHandler(BaseHTTPRequestHandler):
     
     def handle_proxy_post(self, parsed_path):
         """Handle POST proxy requests"""
+        # Rate limit check
+        if not self.check_rate_limit():
+            self.send_error(429, 'Too Many Requests')
+            return
+
         query_params = parse_qs(parsed_path.query)
         
         if 'url' not in query_params:
@@ -199,6 +261,11 @@ class KoboWebHandler(BaseHTTPRequestHandler):
         
         target_url = query_params['url'][0]
         
+        # Domain allowlist check
+        if not self.is_url_allowed(target_url):
+            self.send_error(403, 'Forbidden: Domain not allowed')
+            return
+
         try:
             # Read POST data
             content_length = int(self.headers.get('content-length', 0))
@@ -210,8 +277,13 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             # Make request to wasteof.money API
             request = urllib.request.Request(target_url, data=post_data)
             request.add_header('Content-Type', 'application/json')
-            request.add_header('User-Agent', 'KoboWeb/1.0')
+            request.add_header('User-Agent', 'KoboWeb/1.0 (+https://kobo.joshattic.us/bot)')
             
+            # Add Forwarded headers
+            client_ip = self.client_address[0]
+            request.add_header('X-Forwarded-For', client_ip)
+            request.add_header('Forwarded', f'for={client_ip}')
+
             if auth_token:
                 request.add_header('Authorization', auth_token)
             
@@ -475,6 +547,10 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             msg['From'] = email_addr
             msg['To'] = to_addr
             msg['Subject'] = subject
+            
+            # Append KoboWeb footer
+            footer = "\n\n--\nSent via KoboWeb (https://kobo.joshattic.us)"
+            body += footer
             
             # Add plain text and HTML versions
             text_part = MIMEText(body, 'plain', 'utf-8')
