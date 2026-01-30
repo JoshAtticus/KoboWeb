@@ -75,10 +75,18 @@ class KoboWebHandler(BaseHTTPRequestHandler):
         
         if path == '/' or path == '/index.html':
             self.serve_file('static/index.html', 'text/html')
+        elif path == '/legacy' or path == '/legacy.html':
+            self.serve_file('static/legacy.html', 'text/html')
+        elif path == '/jstest' or path == '/jstest.html':
+            self.serve_file('static/jstest.html', 'text/html')
         elif path == '/style.css':
             self.serve_file('static/style.css', 'text/css')
         elif path == '/script.js':
             self.serve_file('static/script.js', 'application/javascript')
+        elif path == '/legacy.js':
+            self.serve_file('static/legacy.js', 'application/javascript')
+        elif path == '/jstest.js':
+            self.serve_file('static/jstest.js', 'application/javascript')
         elif path == '/bot':
             self.serve_file('static/bot.html', 'text/html')
         elif path.startswith('/api/proxy'):

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KoboWeb Legacy</title>
+    <link rel="stylesheet" href="font-awesome.css">
+    <link rel="stylesheet" href="style.css?v=33">
+    <script src="legacy.js?v=2"></script>
+</head>
+<body>
+    <!-- Header with Clock -->
+    <div class="header">
+        <div class="clock" id="clock">Loading...</div>
+        <div class="date" id="date">Legacy Mode</div>
+    </div>
+    
+    <!-- Home Screen -->
+    <div class="screen" id="homeScreenMain" style="display:block;">
+        <div class="container">
+            <h2>Apps</h2>
+            <div class="app-list">
+                <div class="app-item" onclick="openApp()">
+                    <div class="app-name">wasteof.ink</div>
+                    <div class="app-desc">waste of money on your ereader</div>
+                </div>
+                <div class="app-item" onclick="openEmailApp()">
+                    <div class="app-name">Mail</div>
+                    <div class="app-desc">Read and manage your email</div>
+                </div>
+                <div class="app-item" onclick="openSettings()">
+                    <div class="app-name">Settings</div>
+                    <div class="app-desc">System settings and information</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Screen -->
+    <div class="screen" id="settingsScreen" style="display:none;">
+        <div class="container">
+            <button class="btn-back" onclick="exitSettings()">Back to Home</button>
+            <h2>Settings</h2>
+            
+            <h3>Device Information</h3>
+            <div class="settings-section" id="deviceInfo">
+                <div class="settings-item">Loading...</div>
+            </div>
+            
+            <h3>User Agent</h3>
+            <div class="settings-section">
+                <div class="settings-item">
+                    <div class="settings-value" id="userAgent" style="word-wrap: break-word; font-size: 14px;">Loading...</div>
+                </div>
+            </div>
+            
+            <h3>Accounts</h3>
+            <div class="settings-section" id="accountsList">
+                <div class="settings-item">Loading...</div>
+            </div>
+            <button class="btn btn-add-account" onclick="showAddAccountScreen()"><i class="fa fa-plus"></i> Add Account</button>
+            
+            <h3>System</h3>
+            <div class="settings-section">
+                <button class="btn btn-danger" onclick="factoryReset()">⚠ Factory Reset</button>
+                <div class="settings-note">⚠ Warning: This will log you out of all apps and clear all data.</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Account Screen -->
+    <div class="screen" id="addAccountScreen" style="display:none;">
+        <div class="container">
+            <button class="btn-back" onclick="exitAddAccountScreen()">Back to Settings</button>
+            <h2>Add Account</h2>
+            <p>Select a service to add:</p>
+            
+            <div class="service-list">
+                <div class="service-item" onclick="selectAccountType('wasteof')">
+                    <div class="service-name">wasteof.money</div>
+                    <div class="service-desc">Social media platform</div>
+                </div>
+                <div class="service-item" onclick="selectAccountType('email')">
+                    <div class="service-name">Email (IMAP)</div>
+                    <div class="service-desc">Gmail, Outlook, Yahoo, and more</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add wasteof.money Account Screen -->
+    <div class="screen" id="addWastefScreen" style="display:none;">
+        <div class="container">
+            <button class="btn-back" onclick="exitAddWastefScreen()">Back</button>
+            <h2>Add wasteof.money Account</h2>
+            <form onsubmit="addWastefAccount(event)">
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" id="addWastefUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="addWastefPassword" required>
+                </div>
+                <button type="submit" class="btn">Add Account</button>
+                <div id="addWastefError" class="error"></div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Navigation (shown when app is open) -->
+    <div class="nav" id="nav" style="display:none;">
+        <button class="nav-btn" onclick="showScreen('explore')">Explore</button>
+        <button class="nav-btn" onclick="showScreen('home')" id="homeBtn" style="display:none;">Home</button>
+        <button class="nav-btn" onclick="showScreen('login')" id="loginBtn">Login</button>
+        <button class="nav-btn nav-btn-icon" onclick="showScreen('notifications')" id="notificationsBtn" style="display:none;">
+            <i class="fa fa-bell"></i>
+            <span class="notification-badge" id="notificationBadge" style="display:none;">0</span>
+        </button>
+        <button class="nav-btn" onclick="exitApp()">Exit</button>
+        <span class="user-info" id="userInfo" style="display:none;">
+            <img id="userPic" class="user-pic-small" src="" alt="">
+            <span id="userName" class="user-name-link"></span>
+        </span>
+    </div>
+    
+    <!-- Notifications Screen -->
+    <div class="screen" id="notificationsScreen" style="display:none;">
+        <div class="container">
+            <button class="btn-back" onclick="goBack()">Back</button>
+            <h2>Notifications</h2>
+            <div id="notificationsList">
+                <div class="loading">Loading notifications...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Login Screen -->
+    <div class="screen" id="loginScreen" style="display:none;">
+        <div class="container">
+            <h2>Login to wasteof.money</h2>
+            <form onsubmit="login(event)">
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <div id="loginError" class="error"></div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Explore Screen -->
+    <div class="screen" id="exploreScreen" style="display:none;">
+        <div class="container">
+            <h2>Explore</h2>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchExploreTab('users')">Top Users</button>
+                <button class="tab-btn" onclick="switchExploreTab('posts')">Trending Posts</button>
+            </div>
+            
+            <div id="exploreUsersTab" class="tab-content">
+                <div id="topUsers" class="loading">Loading users...</div>
+            </div>
+            
+            <div id="explorePostsTab" class="tab-content" style="display:none;">
+                <div id="trendingPosts" class="loading">Loading posts...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Home Feed Screen -->
+    <div class="screen" id="homeScreen" style="display:none;">
+        <div class="container">
+            <h2>Your Feed</h2>
+            
+            <!-- Post Composer Button -->
+            <button onclick="showPostComposer()" class="btn" style="width: 100%; margin-bottom: 16px; font-size: 18px;">
+                <i class="fa fa-pencil"></i> What's on your mind?
+            </button>
+            
+            <div id="homeFeed" class="loading">Loading feed...</div>
+        </div>
+    </div>
+    
+    <!-- Post Detail Screen -->
+    <div class="screen" id="postScreen" style="display:none;">
+        <div class="container">
+            <button onclick="goBack()" class="btn-back">← Back</button>
+            <div id="postDetail"></div>
+            
+            <!-- Comment Composer -->
+            <div class="comment-composer">
+                <h3>Add a Comment</h3>
+                <textarea id="commentContent" placeholder="Write a comment..."></textarea>
+                <button onclick="postComment()" class="btn">Comment</button>
+                <div id="commentError" class="error"></div>
+            </div>
+            
+            <h3>Comments</h3>
+            <div id="postComments" class="loading">Loading comments...</div>
+        </div>
+    </div>
+    
+    <!-- Profile Screen -->
+    <div class="screen" id="profileScreen" style="display:none;">
+        <div class="container">
+            <button onclick="goBack()" class="btn-back">← Back</button>
+            <div id="profileDetail"></div>
+            <div id="profilePosts" class="loading">Loading posts...</div>
+            <div id="profilePagination"></div>
+        </div>
+    </div>
+    
+    <!-- Email App Screen -->
+    <div class="screen" id="emailAppScreen" style="display:none;">
+        <!-- Email App Navigation (always visible once an account is selected) -->
+        <div class="app-nav" id="emailNav" style="display:none;">
+            <button class="app-nav-btn" id="emailFoldersNavBtn" onclick="showEmailView('folders')">
+                <i class="fa fa-folder"></i> Folders
+            </button>
+            <button class="app-nav-btn" id="emailComposeNavBtn" onclick="showComposeEmail()">
+                <i class="fa fa-pencil"></i> Compose
+            </button>
+            <button class="app-nav-btn" onclick="exitEmailApp()" style="float: right;">
+                <i class="fa fa-sign-out"></i> Exit
+            </button>
+        </div>
+        
+        <div class="container">
+            <div class="app-header">
+                <h2 class="app-title">Mail</h2>
+                <div class="app-subtitle">Read and manage your email</div>
+            </div>
+            
+            <div id="emailAccountSelector">
+                <div class="loading">Loading email accounts...</div>
+            </div>
+            <div id="emailFolderList" style="display:none;">
+                <h3>Folders</h3>
+                <div id="foldersList"></div>
+            </div>
+            <div id="emailMessageList" style="display:none;">
+                <h3 id="currentFolderName">INBOX</h3>
+                <div id="messagesList"></div>
+            </div>
+            <div id="emailMessageView" style="display:none;">
+                <div id="messageDetail"></div>
+            </div>
+            <div id="emailComposeView" style="display:none;">
+                <h3>Compose Email</h3>
+                <form onsubmit="sendEmail(event)">
+                    <div class="form-group">
+                        <label for="composeTo">To:</label>
+                        <input type="email" id="composeTo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="composeSubject">Subject:</label>
+                        <input type="text" id="composeSubject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="composeBody">Message:</label>
+                        <textarea id="composeBody" rows="10" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">
+                        <i class="fa fa-paper-plane"></i> Send Email
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Email Account Screen -->
+    <div class="screen" id="addEmailScreen" style="display:none;">
+        <div class="container">
+            <button class="btn-back" onclick="exitAddEmailScreen()">Back</button>
+            <h2>Add Email Account</h2>
+            
+            <form onsubmit="addEmailAccount(event)">
+                <div class="form-group">
+                    <label for="emailAddress">Email Address:</label>
+                    <input type="email" id="emailAddress" placeholder="user@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="emailPassword">Password:</label>
+                    <input type="password" id="emailPassword" required>
+                </div>
+                <p><i>Got OAuth2, 2-Factor Authentication or OTP login? You need to create an <b>App Password</b> to use KoboWeb Mail</i></p>
+                <div class="form-group">
+                    <label for="imapServer">IMAP Server:</label>
+                    <input type="text" id="imapServer" placeholder="imap.gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="imapPort">IMAP Port:</label>
+                    <input type="number" id="imapPort" value="993" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="imapSSL" checked> Use SSL/TLS
+                    </label>
+                </div>
+                <div id="addEmailError"></div>
+                <button type="submit" class="btn">Add Email Account</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal System -->
+    <div class="modal-overlay" id="modalOverlay" style="display:none;">
+        <div class="modal-box">
+            <div class="modal-content" id="modalContent"></div>
+            <div class="modal-buttons" id="modalButtons"></div>
+        </div>
+    </div>
+    
+    <!-- Compose Post Modal -->
+    <div class="modal-overlay modal-custom" id="composePostModal" style="display:none;">
+        <div class="modal-box">
+            <div class="modal-content">
+                <h3>Create Post</h3>
+                <div id="repostPreview" style="display:none;"></div>
+                <textarea id="modalPostContent" placeholder="What's on your mind?" style="width: 100%; min-height: 120px; padding: 12px; border: 1px solid #999; font-size: 18px; font-family: Arial, sans-serif;"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn" onclick="Modal.close()">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="createPost()">Post</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js?v=37"></script>
+    <script>
+        // Inline init for very old browsers
+        window.onload = function() {
+            if (typeof updateClock === 'function') {
+                updateClock();
+                setInterval(updateClock, 60000);
+            }
+            if (typeof AccountManager !== 'undefined' && AccountManager.migrateOldData) {
+                AccountManager.migrateOldData();
+            }
+            if (typeof checkLoginStatus === 'function') {
+                checkLoginStatus();
+            }
+        };
+    </script>
+</body>
+</html>

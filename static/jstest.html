@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KoboWeb JS Test</title>
+    <style>
+        body { font-family: monospace; padding: 10px; background: #fff; color: #000; }
+        h1 { font-size: 1.2em; border-bottom: 2px solid #000; }
+        table { width: 100%; border-collapse: collapse; }
+        td, th { border: 1px solid #999; padding: 5px; text-align: left; }
+        .success { background-color: #cfc; color: #060; }
+        .fail { background-color: #fcc; color: #600; }
+        .pending { background-color: #eee; color: #666; }
+    </style>
+</head>
+<body>
+    <h1>JavaScript Feature Test</h1>
+    <p id="ua">UA: Loading...</p>
+    
+    <table id="testTable">
+        <tr>
+            <th>Feature</th>
+            <th>Type</th>
+            <th>Status</th>
+        </tr>
+    </table>
+
+    <div style="margin-top: 20px;">
+        <a href="/legacy">Go to Legacy Version</a> | 
+        <a href="/">Go to Modern Version</a>
+    </div>
+
+    <script src="jstest.js"></script>
+</body>
+</html>
