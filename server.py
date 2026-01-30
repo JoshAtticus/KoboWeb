@@ -21,8 +21,14 @@ from email.header import decode_header
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import base64
+import socketserver
+
+TIMEOUT = 30  # Connectivity timeout in seconds
 
 PORT = int(os.getenv('PORT', '3004'))
+
+class ThreadedHTTPServer(socketserver.ThreadingMixIn, HTTPServer):
+    daemon_threads = True
 
 class KoboWebHandler(BaseHTTPRequestHandler):
     """Request handler for KoboWeb server"""
@@ -132,7 +138,7 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             request = urllib.request.Request(url)
             request.add_header('User-Agent', 'KoboWeb/1.0 (+https://kobo.joshattic.us/bot)')
             
-            response = urllib.request.urlopen(request)
+            response = urllib.request.urlopen(request, timeout=TIMEOUT)
             data = response.read()
             
             # If it's CSS, rewrite font URLs to point to our proxy
@@ -173,7 +179,7 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             request = urllib.request.Request(font_url)
             request.add_header('User-Agent', 'KoboWeb/1.0 (+https://kobo.joshattic.us/bot)')
             
-            response = urllib.request.urlopen(request)
+            response = urllib.request.urlopen(request, timeout=TIMEOUT)
             data = response.read()
             
             self.send_response(200)
@@ -221,7 +227,7 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             if auth_token:
                 request.add_header('Authorization', auth_token)
             
-            response = urllib.request.urlopen(request)
+            response = urllib.request.urlopen(request, timeout=TIMEOUT)
             data = response.read()
             
             # Send response back to client
@@ -287,7 +293,7 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             if auth_token:
                 request.add_header('Authorization', auth_token)
             
-            response = urllib.request.urlopen(request)
+            response = urllib.request.urlopen(request, timeout=TIMEOUT)
             data = response.read()
             
             # Send response back to client
@@ -326,16 +332,23 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             use_ssl = data.get('ssl', True)
             
             # Connect to IMAP server
-            if use_ssl:
-                mail = imaplib.IMAP4_SSL(server, port)
-            else:
-                mail = imaplib.IMAP4(server, port)
-            
-            mail.login(email_addr, password)
-            mail.logout()
-            
-            result = {'success': True, 'message': 'Connection successful'}
-            self.send_json_response(result)
+            mail = None
+            try:
+                if use_ssl:
+                    mail = imaplib.IMAP4_SSL(server, port)
+                else:
+                    mail = imaplib.IMAP4(server, port)
+                
+                mail.login(email_addr, password)
+                
+                result = {'success': True, 'message': 'Connection successful'}
+                self.send_json_response(result)
+            finally:
+                if mail:
+                    try:
+                        mail.logout()
+                    except:
+                        pass
         except Exception as e:
             result = {'success': False, 'error': str(e)}
             self.send_json_response(result, 400)
@@ -353,40 +366,46 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             password = data.get('password')
             use_ssl = data.get('ssl', True)
             
-            if use_ssl:
-                mail = imaplib.IMAP4_SSL(server, port)
-            else:
-                mail = imaplib.IMAP4(server, port)
-            
-            mail.login(email_addr, password)
-            
-            # List all folders
-            status, folders = mail.list()
-            folder_list = []
-            
-            if status == 'OK':
-                for folder in folders:
-                    # Parse folder name from response
-                    # Format: (flags) "delimiter" "folder name"
-                    folder_str = folder.decode('utf-8', errors='ignore')
-                    # Try to extract the folder name (last quoted string)
-                    # Match the last quoted string or unquoted string at the end
-                    match = re.search(r'"([^"]+)"\s*$', folder_str)
-                    if match:
-                        folder_name = match.group(1)
-                    else:
-                        # Try without quotes
-                        parts = folder_str.split()
-                        if len(parts) >= 3:
-                            folder_name = parts[-1]
+            mail = None
+            try:
+                if use_ssl:
+                    mail = imaplib.IMAP4_SSL(server, port)
+                else:
+                    mail = imaplib.IMAP4(server, port)
+                
+                mail.login(email_addr, password)
+                
+                # List all folders
+                status, folders = mail.list()
+                folder_list = []
+                
+                if status == 'OK':
+                    for folder in folders:
+                        # Parse folder name from response
+                        # Format: (flags) "delimiter" "folder name"
+                        folder_str = folder.decode('utf-8', errors='ignore')
+                        # Try to extract the folder name (last quoted string)
+                        # Match the last quoted string or unquoted string at the end
+                        match = re.search(r'"([^"]+)"\s*$', folder_str)
+                        if match:
+                            folder_name = match.group(1)
                         else:
-                            continue
-                    folder_list.append(folder_name)
-            
-            mail.logout()
-            
-            result = {'success': True, 'folders': folder_list}
-            self.send_json_response(result)
+                            # Try without quotes
+                            parts = folder_str.split()
+                            if len(parts) >= 3:
+                                folder_name = parts[-1]
+                            else:
+                                continue
+                        folder_list.append(folder_name)
+                
+                result = {'success': True, 'folders': folder_list}
+                self.send_json_response(result)
+            finally:
+                if mail:
+                    try:
+                        mail.logout()
+                    except:
+                        pass
         except Exception as e:
             result = {'success': False, 'error': str(e)}
             self.send_json_response(result, 400)
@@ -406,58 +425,60 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             folder = data.get('folder', 'INBOX')
             limit = data.get('limit', 20)
             
-            if use_ssl:
-                mail = imaplib.IMAP4_SSL(server, port)
-            else:
-                mail = imaplib.IMAP4(server, port)
-            
-            mail.login(email_addr, password)
-            
-            # Select the folder (mailbox)
+            mail = None
             try:
+                if use_ssl:
+                    mail = imaplib.IMAP4_SSL(server, port)
+                else:
+                    mail = imaplib.IMAP4(server, port)
+                
+                mail.login(email_addr, password)
+                
+                # Select the folder (mailbox)
                 status, response = mail.select(folder)
                 if status != 'OK':
                     raise Exception(f'Failed to select folder "{folder}": {response}')
-            except Exception as e:
-                mail.logout()
-                raise Exception(f'Cannot select folder "{folder}": {str(e)}')
-            
-            # Search for all messages
-            status, messages = mail.search(None, 'ALL')
-            message_ids = messages[0].split()
-            
-            # Get most recent messages
-            message_ids = message_ids[-limit:]
-            message_ids.reverse()
-            
-            message_list = []
-            
-            for msg_id in message_ids:
-                status, msg_data = mail.fetch(msg_id, '(RFC822.HEADER)')
                 
-                if status == 'OK':
-                    email_message = email.message_from_bytes(msg_data[0][1])
+                # Search for all messages
+                status, messages = mail.search(None, 'ALL')
+                message_ids = messages[0].split()
+                
+                # Get most recent messages
+                message_ids = message_ids[-limit:]
+                message_ids.reverse()
+                
+                message_list = []
+                
+                for msg_id in message_ids:
+                    status, msg_data = mail.fetch(msg_id, '(RFC822.HEADER)')
                     
-                    # Decode subject
-                    subject = self.decode_mime_words(email_message.get('Subject', '(No Subject)'))
-                    
-                    # Get sender
-                    from_header = self.decode_mime_words(email_message.get('From', ''))
-                    
-                    # Get date
-                    date = email_message.get('Date', '')
-                    
-                    message_list.append({
-                        'id': msg_id.decode(),
-                        'subject': subject,
-                        'from': from_header,
-                        'date': date
-                    })
-            
-            mail.logout()
-            
-            result = {'success': True, 'messages': message_list}
-            self.send_json_response(result)
+                    if status == 'OK':
+                        email_message = email.message_from_bytes(msg_data[0][1])
+                        
+                        # Decode subject
+                        subject = self.decode_mime_words(email_message.get('Subject', '(No Subject)'))
+                        
+                        # Get sender
+                        from_header = self.decode_mime_words(email_message.get('From', ''))
+                        
+                        # Get date
+                        date = email_message.get('Date', '')
+                        
+                        message_list.append({
+                            'id': msg_id.decode(),
+                            'subject': subject,
+                            'from': from_header,
+                            'date': date
+                        })
+                
+                result = {'success': True, 'messages': message_list}
+                self.send_json_response(result)
+            finally:
+                if mail:
+                    try:
+                        mail.logout()
+                    except:
+                        pass
         except Exception as e:
             result = {'success': False, 'error': str(e)}
             self.send_json_response(result, 400)
@@ -477,46 +498,52 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             folder = data.get('folder', 'INBOX')
             message_id = data.get('message_id')
             
-            if use_ssl:
-                mail = imaplib.IMAP4_SSL(server, port)
-            else:
-                mail = imaplib.IMAP4(server, port)
-            
-            mail.login(email_addr, password)
-            mail.select(folder)
-            
-            # Fetch the message
-            status, msg_data = mail.fetch(message_id.encode(), '(RFC822)')
-            
-            if status == 'OK':
-                email_message = email.message_from_bytes(msg_data[0][1])
+            mail = None
+            try:
+                if use_ssl:
+                    mail = imaplib.IMAP4_SSL(server, port)
+                else:
+                    mail = imaplib.IMAP4(server, port)
                 
-                # Get headers
-                subject = self.decode_mime_words(email_message.get('Subject', '(No Subject)'))
-                from_header = self.decode_mime_words(email_message.get('From', ''))
-                to_header = self.decode_mime_words(email_message.get('To', ''))
-                date = email_message.get('Date', '')
+                mail.login(email_addr, password)
+                mail.select(folder)
                 
-                # Get body (now returns dict with html/text/is_html)
-                body_data = self.get_email_body(email_message)
+                # Fetch the message
+                status, msg_data = mail.fetch(message_id.encode(), '(RFC822)')
                 
-                result = {
-                    'success': True,
-                    'message': {
-                        'subject': subject,
-                        'from': from_header,
-                        'to': to_header,
-                        'date': date,
-                        'body': body_data['html'] if body_data['is_html'] else body_data['text'],
-                        'is_html': body_data['is_html']
+                if status == 'OK':
+                    email_message = email.message_from_bytes(msg_data[0][1])
+                    
+                    # Get headers
+                    subject = self.decode_mime_words(email_message.get('Subject', '(No Subject)'))
+                    from_header = self.decode_mime_words(email_message.get('From', ''))
+                    to_header = self.decode_mime_words(email_message.get('To', ''))
+                    date = email_message.get('Date', '')
+                    
+                    # Get body (now returns dict with html/text/is_html)
+                    body_data = self.get_email_body(email_message)
+                    
+                    result = {
+                        'success': True,
+                        'message': {
+                            'subject': subject,
+                            'from': from_header,
+                            'to': to_header,
+                            'date': date,
+                            'body': body_data['html'] if body_data['is_html'] else body_data['text'],
+                            'is_html': body_data['is_html']
+                        }
                     }
-                }
-                self.send_json_response(result)
-            else:
-                result = {'success': False, 'error': 'Message not found'}
-                self.send_json_response(result, 404)
-            
-            mail.logout()
+                    self.send_json_response(result)
+                else:
+                    result = {'success': False, 'error': 'Message not found'}
+                    self.send_json_response(result, 404)
+            finally:
+                if mail:
+                    try:
+                        mail.logout()
+                    except:
+                        pass
         except Exception as e:
             result = {'success': False, 'error': str(e)}
             self.send_json_response(result, 400)
@@ -651,7 +678,7 @@ def main():
     if not os.path.exists('static'):
         os.makedirs('static')
     
-    server = HTTPServer(('0.0.0.0', PORT), KoboWebHandler)
+    server = ThreadedHTTPServer(('0.0.0.0', PORT), KoboWebHandler)
     print(f'KoboWeb server running on port {PORT}')
     print(f'Open http://localhost:{PORT} in your browser')
     
