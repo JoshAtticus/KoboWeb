@@ -15,12 +15,17 @@
         // Global error handler for S40 debugging
         window.legacyErrors = [];
         window.onerror = function(msg, url, line) {
-             var cleanMsg = (msg || "Unknown Error");
-             var cleanLine = (line || "?");
-             var cleanUrl = (url || "").split('/').pop();
-             var fullMsg = "[" + cleanUrl + ":" + cleanLine + "] " + cleanMsg;
-             
-             window.legacyErrors.push(fullMsg);
+             // If msg is an Event object (loading error), try to get target info or ignore
+             if (typeof msg === 'object') {
+                 window.legacyErrors.push("ERR: Script Loading Failed (Syntax Error?)");
+             } else {
+                 var cleanMsg = (msg || "Unknown Error");
+                 var cleanLine = (line || "?");
+                 var cleanUrl = (url || "").split('/').pop();
+                 var fullMsg = "[" + cleanUrl + ":" + cleanLine + "] " + cleanMsg;
+                 
+                 window.legacyErrors.push(fullMsg);
+             }
              
              var errDisplay = document.getElementById('debug-error');
              if (errDisplay) {
@@ -41,7 +46,7 @@
         if (!window.JSON) window.legacyErrors.push("ERR: JSON missing after polyfills");
         else window.legacyErrors.push("INFO: Polyfills OK");
     </script>
-    <script src="legacy.js?v=3"></script>
+    <script src="legacy.js?v=999"></script>
 </head>
 <body style="padding-top: 40px;"> <!-- Add padding for header -->
     <div id="debug-error" style="display:none; position:fixed; top:30px; left:0; right:0; z-index:99999; background:#ffdddd; color:red; border:2px solid red; padding:5px; font-size:12px; font-family:monospace; white-space: pre-wrap; word-wrap: break-word;"></div>
