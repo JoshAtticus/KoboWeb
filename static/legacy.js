@@ -1696,7 +1696,15 @@ function markNotificationsAsRead(notifications) {
 // API functions using server proxy
 function proxyGet(url, callback, errorCallback, token) {
     var xhr = createXHR();
+    if (!xhr) {
+        if (errorCallback) errorCallback("XHR not supported");
+        return;
+    }
+    
     var proxyUrl = '/api/proxy?url=' + encodeURIComponent(url);
+    
+    // Add timestamp to prevent caching on old browsers
+    proxyUrl += '&t=' + new Date().getTime();
     
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
@@ -1710,18 +1718,30 @@ function proxyGet(url, callback, errorCallback, token) {
         }
     };
     
-    xhr.open('GET', proxyUrl, true);
-    
-    if (token) {
-        xhr.setRequestHeader('Authorization', token);
+    try {
+        xhr.open('GET', proxyUrl, true);
+        
+        if (token) {
+            xhr.setRequestHeader('Authorization', token);
+        }
+        
+        xhr.send();
+    } catch(e) {
+        if (errorCallback) errorCallback("XHR Error: " + e.message);
     }
-    
-    xhr.send();
 }
 
 function proxyPost(url, data, token, callback, errorCallback) {
     var xhr = createXHR();
+    if (!xhr) {
+        if (errorCallback) errorCallback("XHR not supported");
+        return;
+    }
+
     var proxyUrl = '/api/proxy?url=' + encodeURIComponent(url);
+    
+    // Add timestamp to prevent caching
+    proxyUrl += '&t=' + new Date().getTime();
     
     if (token) {
         proxyUrl += '&token=' + encodeURIComponent(token);
@@ -1739,9 +1759,13 @@ function proxyPost(url, data, token, callback, errorCallback) {
         }
     };
     
-    xhr.open('POST', proxyUrl, true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(data);
+    try {
+        xhr.open('POST', proxyUrl, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(data);
+    } catch(e) {
+         if (errorCallback) errorCallback("XHR Error: " + e.message);
+    }
 }
 
 // Explore functions
