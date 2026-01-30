@@ -37,6 +37,10 @@
         };
     </script>
     <script src="polyfills.js"></script>
+    <script>
+        if (!window.JSON) window.legacyErrors.push("ERR: JSON missing after polyfills");
+        else window.legacyErrors.push("INFO: Polyfills OK");
+    </script>
     <script src="legacy.js?v=3"></script>
 </head>
 <body style="padding-top: 40px;"> <!-- Add padding for header -->

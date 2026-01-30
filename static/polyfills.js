@@ -37,7 +37,6 @@ if (!Array.prototype.indexOf) {
 // Object.keys polyfill
 if (!Object.keys) {
   Object.keys = (function() {
-    'use strict';
     var hasOwnProperty = Object.prototype.hasOwnProperty,
         hasEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
         dontEnums = [
@@ -83,13 +82,25 @@ if (!window.JSON) {
     stringify: function(vContent) {
       if (vContent instanceof Object) {
         var sOutput = "";
-        if (vContent.constructor === Array) {
-          for (var nId = 0; nId < vContent.length; sOutput += this.stringify(vContent[nId]) + ",", nId++);
-          return "[" + sOutput.substr(0, sOutput.length - 1) + "]";
+        if (Object.prototype.toString.call(vContent) === '[object Array]') {
+          for (var i = 0; i < vContent.length; i++) {
+             sOutput += this.stringify(vContent[i]);
+             if (i < vContent.length - 1) sOutput += ",";
+          }
+          return "[" + sOutput + "]";
         }
-        if (vContent.toString !== Object.prototype.toString) { return '"' + vContent.toString().replace(/"/g, '\\$&') + '"'; }
-        for (var sProp in vContent) { sOutput += '"' + sProp.replace(/"/g, '\\$&') + '":' + this.stringify(vContent[sProp]) + ','; }
-        return "{" + sOutput.substr(0, sOutput.length - 1) + "}";
+        if (vContent.toString !== Object.prototype.toString) { 
+             return '"' + vContent.toString().replace(/"/g, '\\$&') + '"'; 
+        }
+        for (var sProp in vContent) { 
+             if (Object.prototype.hasOwnProperty.call(vContent, sProp)) {
+                 sOutput += '"' + sProp.replace(/"/g, '\\$&') + '":' + this.stringify(vContent[sProp]) + ','; 
+             }
+        }
+        if (sOutput.length > 0 && sOutput.charAt(sOutput.length - 1) === ',') {
+             sOutput = sOutput.substring(0, sOutput.length - 1);
+        }
+        return "{" + sOutput + "}";
       }
       return typeof vContent === "string" ? '"' + vContent.replace(/"/g, '\\$&') + '"' : String(vContent);
     }

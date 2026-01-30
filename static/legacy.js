@@ -4,7 +4,7 @@
 // POLYFILLS are now loaded from polyfills.js
 // This file contains the main logic adapted for legacy browsers
 
-console.log('KoboWeb Legacy script loaded');
+if(window.legacyErrors && window.legacyErrors.push) window.legacyErrors.push("INFO: Legacy script start");
 
 // Modal System
 var Modal = {
