@@ -85,6 +85,8 @@ class KoboWebHandler(BaseHTTPRequestHandler):
             self.serve_file('static/script.js', 'application/javascript')
         elif path == '/legacy.js':
             self.serve_file('static/legacy.js', 'application/javascript')
+        elif path == '/polyfills.js':
+            self.serve_file('static/polyfills.js', 'application/javascript')
         elif path == '/jstest.js':
             self.serve_file('static/jstest.js', 'application/javascript')
         elif path == '/bot':

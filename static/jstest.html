@@ -27,10 +27,17 @@
     </table>
 
     <div style="margin-top: 20px;">
+        <a href="?poly=1">Test with Polyfills</a> |
+        <a href="?poly=0">Test Raw Browser</a> |
         <a href="/legacy">Go to Legacy Version</a> | 
         <a href="/">Go to Modern Version</a>
     </div>
 
+    <script>
+        if (location.search.indexOf('poly=1') !== -1) {
+            document.write('<script src="polyfills.js"><\/script>');
+        }
+    </script>
     <script src="jstest.js"></script>
 </body>
 </html>
