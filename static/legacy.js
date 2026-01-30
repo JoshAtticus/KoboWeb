@@ -2515,12 +2515,12 @@ function toggleLove(postId, event) {
             var result = JSON.parse(response);
             
             if (loveBtn && loveCount) {
-                if (result.new.isLoving) {
+                if (result['new'].isLoving) {
                     loveBtn.className = 'post-action loved';
-                    loveBtn.innerHTML = '<i class="fa fa-heart"></i> <span id="loveCount-' + postId + '">' + result.new.loves + '</span>';
+                    loveBtn.innerHTML = '<i class="fa fa-heart"></i> <span id="loveCount-' + postId + '">' + result['new'].loves + '</span>';
                 } else {
                     loveBtn.className = 'post-action';
-                    loveBtn.innerHTML = '<i class="fa fa-heart-o"></i> <span id="loveCount-' + postId + '">' + result.new.loves + '</span>';
+                    loveBtn.innerHTML = '<i class="fa fa-heart-o"></i> <span id="loveCount-' + postId + '">' + result['new'].loves + '</span>';
                 }
                 loveBtn.style.opacity = '1';
             }
@@ -2692,7 +2692,7 @@ function toggleFollow(username) {
             var result = JSON.parse(response);
             
             if (followBtn) {
-                if (result.new.isFollowing) {
+                if (result['new'].isFollowing) {
                     followBtn.innerHTML = 'Unfollow';
                     followBtn.className = 'btn btn-following';
                 } else {
@@ -2705,7 +2705,7 @@ function toggleFollow(username) {
                 // Update follower count
                 var followerStat = document.getElementById('profileFollowers');
                 if (followerStat) {
-                    followerStat.innerHTML = result.new.followers + ' followers';
+                    followerStat.innerHTML = result['new'].followers + ' followers';
                 }
             }
         } catch (e) {
