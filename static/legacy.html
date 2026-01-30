@@ -338,10 +338,9 @@
         </div>
     </div>
     
-    <script src="script.js?v=37"></script>
     <script>
         // Inline init for very old browsers
-        window.onload = function() {
+        var init = function() {
             if (typeof updateClock === 'function') {
                 updateClock();
                 setInterval(updateClock, 60000);
@@ -353,6 +352,14 @@
                 checkLoginStatus();
             }
         };
+
+        if (window.addEventListener) {
+            window.addEventListener('load', init, false);
+        } else if (window.attachEvent) {
+            window.attachEvent('onload', init);
+        } else {
+            window.onload = init;
+        }
     </script>
 </body>
 </html>
