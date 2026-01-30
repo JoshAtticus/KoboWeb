@@ -31,30 +31,91 @@ if (!Array.prototype.indexOf) {
     };
 }
 
+if (!Object.keys) {
+  Object.keys = (function() {
+    'use strict';
+    var hasOwnProperty = Object.prototype.hasOwnProperty,
+        hasEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+        dontEnums = [
+          'toString',
+          'toLocaleString',
+          'valueOf',
+          'hasOwnProperty',
+          'isPrototypeOf',
+          'propertyIsEnumerable',
+          'constructor'
+        ],
+        dontEnumsLength = dontEnums.length;
+
+    return function(obj) {
+      if (typeof obj !== 'function' && (typeof obj !== 'object' || obj === null)) {
+        throw new TypeError('Object.keys called on non-object');
+      }
+
+      var result = [], prop, i;
+
+      for (prop in obj) {
+        if (hasOwnProperty.call(obj, prop)) {
+          result.push(prop);
+        }
+      }
+
+      if (hasEnumBug) {
+        for (i = 0; i < dontEnumsLength; i++) {
+          if (hasOwnProperty.call(obj, dontEnums[i])) {
+            result.push(dontEnums[i]);
+          }
+        }
+      }
+      return result;
+    };
+  }());
+}
+
+// JSON Polyfill (Simplified)
+if (!window.JSON) {
+  window.JSON = {
+    parse: function(sJSON) { return eval('(' + sJSON + ')'); },
+    stringify: function(vContent) {
+      if (vContent instanceof Object) {
+        var sOutput = "";
+        if (vContent.constructor === Array) {
+          for (var nId = 0; nId < vContent.length; sOutput += this.stringify(vContent[nId]) + ",", nId++);
+          return "[" + sOutput.substr(0, sOutput.length - 1) + "]";
+        }
+        if (vContent.toString !== Object.prototype.toString) { return '"' + vContent.toString().replace(/"/g, '\\$&') + '"'; }
+        for (var sProp in vContent) { sOutput += '"' + sProp.replace(/"/g, '\\$&') + '":' + this.stringify(vContent[sProp]) + ','; }
+        return "{" + sOutput.substr(0, sOutput.length - 1) + "}";
+      }
+      return typeof vContent === "string" ? '"' + vContent.replace(/"/g, '\\$&') + '"' : String(vContent);
+    }
+  };
+}
+
 // LocalStorage Safe Wrapper
 var SafeStorage = {
     _data: {},
     getItem: function(k) {
-        try { if(window.localStorage) return window.SafeStorage.getItem(k); } catch(e){}
+        try { if(window.localStorage) return window.localStorage.getItem(k); } catch(e){}
         return this._data[k] || null;
     },
     setItem: function(k, v) {
-        try { if(window.localStorage) window.SafeStorage.setItem(k, v); } catch(e){}
+        try { if(window.localStorage) window.localStorage.setItem(k, v); } catch(e){}
         this._data[k] = v;
     },
     removeItem: function(k) {
-        try { if(window.localStorage) window.SafeStorage.removeItem(k); } catch(e){}
+        try { if(window.localStorage) window.localStorage.removeItem(k); } catch(e){}
         delete this._data[k];
     },
     clear: function() {
-        try { if(window.localStorage) window.SafeStorage.clear(); } catch(e){}
+        try { if(window.localStorage) window.localStorage.clear(); } catch(e){}
         this._data = {};
     }
 };
 
 function createXHR() {
     if (window.XMLHttpRequest) {
-        return createXHR();
+        return new XMLHttpRequest();
     }
     try { return new ActiveXObject("Msxml2.XMLHTTP"); } catch(e) {}
     try { return new ActiveXObject("Microsoft.XMLHTTP"); } catch(e) {}
