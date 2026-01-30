@@ -11,10 +11,23 @@
     
     <link rel="stylesheet" href="font-awesome.css">
     <link rel="stylesheet" href="style.css?v=33">
+    <script>
+        // Global error handler for S40 debugging
+        window.legacyErrors = [];
+        window.onerror = function(msg, url, line) {
+            window.legacyErrors.push("ERR: " + msg + " L:" + line);
+            var errDisplay = document.getElementById('debug-error');
+            if (errDisplay) {
+                errDisplay.innerHTML = window.legacyErrors.join('<br>');
+                errDisplay.style.display = 'block';
+            }
+        };
+    </script>
     <script src="polyfills.js"></script>
     <script src="legacy.js?v=3"></script>
 </head>
 <body>
+    <div id="debug-error" style="display:none; background:red; color:yellow; font-weight:bold; padding:5px; border-bottom:1px solid #000;"></div>
     <!-- Header with Clock -->
     <div class="header">
         <div class="clock" id="clock">Loading...</div>

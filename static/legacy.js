@@ -315,6 +315,15 @@ var notificationCheckInterval = null;
 
 // Initialize on page load
 window.onload = function() {
+  try {
+    if (window.legacyErrors && window.legacyErrors.length > 0) {
+        var errDisplay = document.getElementById('debug-error');
+        if (errDisplay) {
+             errDisplay.innerHTML = window.legacyErrors.join('<br>');
+             errDisplay.style.display = 'block';
+        }
+    }
+    
     updateClock();
     setInterval(updateClock, 60000); // Update every minute (no seconds for e-ink)
     
@@ -323,6 +332,17 @@ window.onload = function() {
     
     // Check if user is logged in
     checkLoginStatus();
+  } catch (e) {
+    var msg = "Init Error: " + e.message;
+    if (window.legacyErrors) window.legacyErrors.push(msg);
+    var errDisplay = document.getElementById('debug-error');
+    if (errDisplay) {
+         errDisplay.innerHTML = msg;
+         errDisplay.style.display = 'block';
+    } else {
+        alert(msg);
+    }
+  }
 };
 
 // App management
