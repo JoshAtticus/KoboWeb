@@ -15,19 +15,32 @@
         // Global error handler for S40 debugging
         window.legacyErrors = [];
         window.onerror = function(msg, url, line) {
-            window.legacyErrors.push("ERR: " + msg + " L:" + line);
-            var errDisplay = document.getElementById('debug-error');
-            if (errDisplay) {
-                errDisplay.innerHTML = window.legacyErrors.join('<br>');
-                errDisplay.style.display = 'block';
-            }
+             var cleanMsg = (msg || "Unknown Error");
+             var cleanLine = (line || "?");
+             var cleanUrl = (url || "").split('/').pop();
+             var fullMsg = "[" + cleanUrl + ":" + cleanLine + "] " + cleanMsg;
+             
+             window.legacyErrors.push(fullMsg);
+             
+             var errDisplay = document.getElementById('debug-error');
+             if (errDisplay) {
+                 // Use basic joining, no fancy DOM manipulation that might fail
+                 var html = "";
+                 for(var i=0; i<window.legacyErrors.length; i++) {
+                     html += window.legacyErrors[i] + "<br><hr>";
+                 }
+                 errDisplay.innerHTML = html;
+                 errDisplay.style.display = 'block';
+             }
+             // Return false to let default handler run (though on S40 maybe true is better to suppress?)
+             return false; 
         };
     </script>
     <script src="polyfills.js"></script>
     <script src="legacy.js?v=3"></script>
 </head>
-<body>
-    <div id="debug-error" style="display:none; background:red; color:yellow; font-weight:bold; padding:5px; border-bottom:1px solid #000;"></div>
+<body style="padding-top: 40px;"> <!-- Add padding for header -->
+    <div id="debug-error" style="display:none; position:fixed; top:30px; left:0; right:0; z-index:99999; background:#ffdddd; color:red; border:2px solid red; padding:5px; font-size:12px; font-family:monospace; white-space: pre-wrap; word-wrap: break-word;"></div>
     <!-- Header with Clock -->
     <div class="header">
         <div class="clock" id="clock">Loading...</div>
