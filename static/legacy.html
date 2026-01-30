@@ -17,7 +17,12 @@
         window.onerror = function(msg, url, line) {
              // If msg is an Event object (loading error), try to get target info or ignore
              if (typeof msg === 'object') {
-                 window.legacyErrors.push("ERR: Script Loading Failed (Syntax Error?)");
+                 if(msg.message) {
+                     window.legacyErrors.push("ERR OBJ: " + msg.message);
+                 } else {
+                     var tag = (msg.target || msg.srcElement) ? (msg.target || msg.srcElement).tagName : "Unk";
+                     window.legacyErrors.push("ERR EVT: " + tag);
+                 }
              } else {
                  var cleanMsg = (msg || "Unknown Error");
                  var cleanLine = (line || "?");
@@ -376,24 +381,33 @@
     <script>
         // Inline init for very old browsers
         var init = function() {
-            if (typeof updateClock === 'function') {
-                updateClock();
-                setInterval(updateClock, 60000);
-            }
-            if (typeof AccountManager !== 'undefined' && AccountManager.migrateOldData) {
-                AccountManager.migrateOldData();
-            }
-            if (typeof checkLoginStatus === 'function') {
-                checkLoginStatus();
+            try {
+                if (typeof updateClock === 'function') {
+                    updateClock();
+                    setInterval(updateClock, 60000);
+                }
+                if (typeof AccountManager !== 'undefined' && AccountManager.migrateOldData) {
+                    AccountManager.migrateOldData();
+                }
+                if (typeof checkLoginStatus === 'function') {
+                    checkLoginStatus();
+                }
+            } catch(e) {
+                if(window.legacyErrors) window.legacyErrors.push("Init Crash: " + e.message);
             }
         };
 
+        // Don't overwrite existing onload!
         if (window.addEventListener) {
             window.addEventListener('load', init, false);
         } else if (window.attachEvent) {
             window.attachEvent('onload', init);
         } else {
-            window.onload = init;
+            var oldLoad = window.onload;
+            window.onload = function() {
+                if(oldLoad) try{oldLoad();}catch(e){}
+                init();
+            };
         }
     </script>
 </body>
